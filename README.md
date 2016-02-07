@@ -1,3 +1,84 @@
+# mach-O format
+
+![Mach-o](img/mach_o_segments.gif)
+
+## header
+
+in /usr/include/mach-o/loader.h
+
+### 32-bit
+
+```
+/*
+ * The 32-bit mach header appears at the very beginning of the object file for
+ * 32-bit architectures.
+ */
+struct mach_header {
+	uint32_t		magic;		/* mach magic number identifier */
+	cpu_type_t		cputype;	/* cpu specifier */
+	cpu_subtype_t	cpusubtype;	/* machine specifier */
+	uint32_t		filetype;	/* type of file */
+	uint32_t		ncmds;		/* number of load commands */
+	uint32_t		sizeofcmds;	/* the size of all the load commands */
+	uint32_t		flags;		/* flags */
+};
+
+/* Constant for the magic field of the mach_header (32-bit architectures) */
+\#define MH_MAGIC 0xfeedface	/* the mach magic number */
+\#define MH_CIGAM 0xcefaedfe	/* NXSwapInt(MH_MAGIC) */
+```
+
+### 64-bit
+
+```
+/*
+ * The 64-bit mach header appears at the very beginning of object files for
+ * 64-bit architectures.
+ */
+struct mach_header_64 {
+	uint32_t		magic;		/* mach magic number identifier */
+	cpu_type_t		cputype;	/* cpu specifier */
+	cpu_subtype_t	cpusubtype;	/* machine specifier */
+	uint32_t		filetype;	/* type of file */
+	uint32_t		ncmds;		/* number of load commands */
+	uint32_t		sizeofcmds;	/* the size of all the load commands */
+	uint32_t		flags;		/* flags */
+	uint32_t		reserved;	/* reserved */
+};
+
+/* Constant for the magic field of the mach_header_64 (64-bit architectures) */
+\#define MH_MAGIC_64 0xfeedfacf /* the 64-bit mach magic number */
+\#define MH_CIGAM_64 0xcffaedfe /* NXSwapInt(MH_MAGIC_64) */
+```
+
+## command
+
+```
+/*
+ \* The load commands directly follow the mach_header.  The total size of all
+ \* of the commands is given by the sizeofcmds field in the mach_header.  All
+ \* load commands must have as their first two fields cmd and cmdsize.  The cmd
+ \* field is filled in with a constant for that command type.  Each command type
+ \* has a structure specifically for it.  The cmdsize field is the size in bytes
+ \* of the particular load command structure plus anything that follows it that
+ \* is a part of the load command (i.e. section structures, strings, etc.).  To
+ \* advance to the next load command the cmdsize can be added to the offset or
+ \* pointer of the current load command.  The cmdsize for 32-bit architectures
+ \* MUST be a multiple of 4 bytes and for 64-bit architectures MUST be a multiple
+ \* of 8 bytes (these are forever the maximum alignment of any load commands).
+ \* The padded bytes must be zero.  All tables in the object file must also
+ \* follow these rules so the file can be memory mapped.  Otherwise the pointers
+ \* to these tables will not work well or at all on some machines.  With all
+ \* padding zeroed like objects will compare byte for byte.
+ */
+struct load_command {
+	uint32_t cmd;		/* type of load command */
+	uint32_t cmdsize;	/* total size of command in bytes */
+};
+```
+
+### symtab\_command
+
 # nm
 
 ## man nm
@@ -47,88 +128,6 @@ library.
  * o: The value shall be written in octal.
  * x: The value shall be written in hexadecimal.
 
-## mach-O format
-
-|mach\_header|
-|------------|
-|command|
-
-### header
-
-in /usr/include/mach-o/loader.h
-
-#### 32-bit
-
-```
-/*
- * The 32-bit mach header appears at the very beginning of the object file for
- * 32-bit architectures.
- */
-struct mach_header {
-	uint32_t		magic;		/* mach magic number identifier */
-	cpu_type_t		cputype;	/* cpu specifier */
-	cpu_subtype_t	cpusubtype;	/* machine specifier */
-	uint32_t		filetype;	/* type of file */
-	uint32_t		ncmds;		/* number of load commands */
-	uint32_t		sizeofcmds;	/* the size of all the load commands */
-	uint32_t		flags;		/* flags */
-};
-
-/* Constant for the magic field of the mach_header (32-bit architectures) */
-\#define MH_MAGIC 0xfeedface	/* the mach magic number */
-\#define MH_CIGAM 0xcefaedfe	/* NXSwapInt(MH_MAGIC) */
-```
-
-#### 64-bit
-
-```
-/*
- * The 64-bit mach header appears at the very beginning of object files for
- * 64-bit architectures.
- */
-struct mach_header_64 {
-	uint32_t		magic;		/* mach magic number identifier */
-	cpu_type_t		cputype;	/* cpu specifier */
-	cpu_subtype_t	cpusubtype;	/* machine specifier */
-	uint32_t		filetype;	/* type of file */
-	uint32_t		ncmds;		/* number of load commands */
-	uint32_t		sizeofcmds;	/* the size of all the load commands */
-	uint32_t		flags;		/* flags */
-	uint32_t		reserved;	/* reserved */
-};
-
-/* Constant for the magic field of the mach_header_64 (64-bit architectures) */
-\#define MH_MAGIC_64 0xfeedfacf /* the 64-bit mach magic number */
-\#define MH_CIGAM_64 0xcffaedfe /* NXSwapInt(MH_MAGIC_64) */
-```
-
-### command
-
-```
-/*
- \* The load commands directly follow the mach_header.  The total size of all
- \* of the commands is given by the sizeofcmds field in the mach_header.  All
- \* load commands must have as their first two fields cmd and cmdsize.  The cmd
- \* field is filled in with a constant for that command type.  Each command type
- \* has a structure specifically for it.  The cmdsize field is the size in bytes
- \* of the particular load command structure plus anything that follows it that
- \* is a part of the load command (i.e. section structures, strings, etc.).  To
- \* advance to the next load command the cmdsize can be added to the offset or
- \* pointer of the current load command.  The cmdsize for 32-bit architectures
- \* MUST be a multiple of 4 bytes and for 64-bit architectures MUST be a multiple
- \* of 8 bytes (these are forever the maximum alignment of any load commands).
- \* The padded bytes must be zero.  All tables in the object file must also
- \* follow these rules so the file can be memory mapped.  Otherwise the pointers
- \* to these tables will not work well or at all on some machines.  With all
- \* padding zeroed like objects will compare byte for byte.
- */
-struct load_command {
-	uint32_t cmd;		/* type of load command */
-	uint32_t cmdsize;	/* total size of command in bytes */
-};
-```
-
-#### symtab\_command
 
 ## implementation
 
