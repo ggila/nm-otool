@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/07 15:17:27 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/08 10:19:48 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/08 19:48:37 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@
 
 #define HT_GET_STR(magic) ((t_val*)ht_get(&ht, &magic))->str
 #define HT_GET_IND(magic) ((t_val*)ht_get(&ht, &magic))->i
+
+#if defined(__LITTLE_ENDIAN__)
+ #define ENDIANESS "OSLittleEndian"
+#elif defined(__BIG_ENDIAN__)
+ #define ENDIANESS "OSBigEndian"
+#else
+ #define ENDIANESS "OSUnknownByteOrder"
+#endif
 
 typedef struct	s_val
 {
@@ -37,28 +45,33 @@ static t_val magic_val[] = {{"MH_MAGIC", 0},
 							{"FAT_CIGAM", 5}};
 
 static const t_kv magic_kv[] = {{&magic_key[0], 4, &magic_val[0], sizeof(magic_val[0])},
-							{&magic_key[1], 4, &magic_val[1], sizeof(magic_val[1])},
-							{&magic_key[2], 4, &magic_val[2], sizeof(magic_val[2])},
-							{&magic_key[3], 4, &magic_val[3], sizeof(magic_val[3])},
-							{&magic_key[4], 4, &magic_val[4], sizeof(magic_val[4])},
-							{&magic_key[5], 4, &magic_val[5], sizeof(magic_val[5])},
-							KV_NULL};
+								{&magic_key[1], 4, &magic_val[1], sizeof(magic_val[1])},
+								{&magic_key[2], 4, &magic_val[2], sizeof(magic_val[2])},
+								{&magic_key[3], 4, &magic_val[3], sizeof(magic_val[3])},
+								{&magic_key[4], 4, &magic_val[4], sizeof(magic_val[4])},
+								{&magic_key[5], 4, &magic_val[5], sizeof(magic_val[5])},
+								KV_NULL};
 
 void	print_stat(t_hash_tbl *ht, int mach_stat[], int i)
 {
 	t_kv	*kv;
 	char	*mag_str;
-	int		mag_ind;
+	int		quant;
+	int		sum = 0;
 
 	printf("stat:\n");
 	while ((kv = ht_getnextkv(ht)) != NULL)
 	{
 		mag_str = ((t_val*)(kv->value))->str;
-		mag_ind = ((t_val*)(kv->value))->i;
-		printf("\t%s:\t\t%d\t%d%%\n", mag_str, mag_ind, (int)(100 * ((double)mag_ind) / i));
+		quant = mach_stat[((t_val*)(kv->value))->i];
+		sum += quant;
+		printf("\t%s:\t%d\t%.1f%%\n", mag_str, quant, (100 * ((double)quant) / i));
 	}
+	printf("\tother:\t\t%d\t%.1f%%\n", i - sum, (100 * ((double)(i - sum)) / i));
 	printf("total: %d\n", i);
 }
+
+void b(t_val *d) {printf("str: %s | index: %d", d->str, d->i);}
 
 int		main(int ac, char **av)
 {
@@ -82,7 +95,8 @@ int		main(int ac, char **av)
 				(fstat(fd, &buf) == -1) ||
 				((ptr = mmap(0, buf.st_size, PROT_READ,
 							 MAP_PRIVATE, fd, 0)) == MAP_FAILED))
-			perror("open");
+			continue;
+//			perror("open");
 		else
 		{
 			magic = *(int*)ptr;
