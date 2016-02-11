@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/07 15:17:27 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/11 17:45:37 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/11 20:14:54 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ typedef struct	s_val
 	int		stat;
 }				t_val;
 
-static int magic_key[] = {0xfeedface, 0xcefaedfe,
-							0xfeedfacf, 0xcffaedfe,
-							0xcafebabe, 0xbebafeca};
+static unsigned int magic_key[] = {0xfeedface, 0xcefaedfe,
+									0xfeedfacf, 0xcffaedfe,
+									0xcafebabe, 0xbebafeca};
 
 static t_val magic_val[] = {{"MH_MAGIC", 0, 0},
 							{"MH_CIGAM", 1, 0},
@@ -45,12 +45,20 @@ static t_val magic_val[] = {{"MH_MAGIC", 0, 0},
 							{"FAT_MAGIC", 4, 0},
 							{"FAT_CIGAM", 5, 0}};
 
-static const t_kv magic_kv[] = {{&magic_key[0], 4, &magic_val[0], sizeof(magic_val[0])},
-								{&magic_key[1], 4, &magic_val[1], sizeof(magic_val[1])},
-								{&magic_key[2], 4, &magic_val[2], sizeof(magic_val[2])},
-								{&magic_key[3], 4, &magic_val[3], sizeof(magic_val[3])},
-								{&magic_key[4], 4, &magic_val[4], sizeof(magic_val[4])},
-								{&magic_key[5], 4, &magic_val[5], sizeof(magic_val[5])},
+static int g_fd = 1;
+
+static const t_kv magic_kv[] = {{&magic_key[0], sizeof(unsigned int),
+										&magic_val[0], sizeof(magic_val[0])},
+								{&magic_key[1], sizeof(unsigned int),
+										&magic_val[1], sizeof(magic_val[1])},
+								{&magic_key[2], sizeof(unsigned int),
+										&magic_val[2], sizeof(magic_val[2])},
+								{&magic_key[3], sizeof(unsigned int),
+										&magic_val[3], sizeof(magic_val[3])},
+								{&magic_key[4], sizeof(unsigned int),
+										&magic_val[4], sizeof(magic_val[4])},
+								{&magic_key[5], sizeof(unsigned int),
+										&magic_val[5], sizeof(magic_val[5])},
 								KV_NULL};
 
 void	print_stat(t_hash_tbl *ht, int i)
@@ -72,7 +80,7 @@ void	print_stat(t_hash_tbl *ht, int i)
 	ft_printf("total: %d\n", i);
 }
 
-void b(t_val *d) {ft_printf("str: %s | index: %d", d->str, d->i);}
+void b(t_val *d) {ft_printf_fd(g_fd, "str: %s | index: %d", d->str, d->i);}
 
 void	*map_file(char *file, int *fd, int *count)
 {
@@ -81,16 +89,16 @@ void	*map_file(char *file, int *fd, int *count)
 
 	if (stat(file, &buf) == -1)
 	{
-		ft_printf("%s: ", file);
+		ft_printf_fd(g_fd, "%s: ", file);
 		perror("stat");
 		return (MAP_FAILED);
 	}
 	else if ((buf.st_mode & S_IFMT) != S_IFREG)
 		return (MAP_FAILED);
-	ft_printf("%s: ", strrchr(file, '/') + 1);
+	ft_printf_fd(g_fd, "%s: ", strrchr(file, '/') + 1);
 	if ((*fd = open(file, O_RDONLY)) == -1)
 	{
-		perror("open");
+		perror(file);
 		return (MAP_FAILED);
 	}
 	else if ((ptr = mmap(0, buf.st_size, PROT_READ,
@@ -105,20 +113,20 @@ void	*map_file(char *file, int *fd, int *count)
 
 void	macho_file_stat(char *file, t_hash_tbl *ht, int *count)
 {
-	int		magic;
-	int		fd;
-	void	*ptr;
+	unsigned int		magic;
+	int					fd;
+	void				*ptr;
 
 	if ((ptr = map_file(file, &fd, count)) != MAP_FAILED)
 	{
-		magic = *(int*)ptr;
+		magic = *(unsigned int*)ptr;
 		if (ht_isset(ht, &magic))
 		{
-			ft_printf("%x -> %s\n", magic, HT_GET_STR(ht, magic));
+			ft_printf_fd(g_fd, "%x -> %s\n", magic, HT_GET_STR(ht, magic));
 			HT_INC_STAT(ht, magic);
 		}
 		else
-			ft_printf("not a mach-o file\n");
+			ft_printf_fd(g_fd, "not a mach-o file\n");
 	}
 	if (fd != -1)
 		close(fd);
@@ -159,7 +167,7 @@ int		check_opt(int ac, char **av)
 		return (0);
 	if (ft_strcmp(av[1], "--verbose") == 0)
 		return (1);
-	if ((fd = open("/dev/null", O_WRONLY)) == -1)
+	if ((g_fd = open("/dev/null", O_WRONLY)) == -1)
 	{
 		perror("open \"/dev/null\"");
 		exit(EXIT_FAILURE);
