@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/07 15:17:27 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/11 09:36:58 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/11 17:45:37 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <string.h>
 
 #include "nm_otool.h"
 #include "hash_tables.h"
@@ -24,7 +25,7 @@
 #define HT_GET_STR(ht, magic) ((t_val*)ht_get(ht, &magic))->str
 #define HT_GET_IND(ht, magic) ((t_val*)ht_get(ht, &magic))->i
 #define HT_GET_STAT(ht, magic) ((t_val*)ht_get(ht, &magic))->stat
-#define HT_INC_STAT(ht, magic) (*(int*)(((t_val*)ht_get(ht, &magic))->stat)) += 1
+#define HT_INC_STAT(ht, magic) (*(int*)(&(((t_val*)ht_get(ht, &magic))->stat))) += 1
 
 typedef struct	s_val
 {
@@ -78,14 +79,27 @@ void	*map_file(char *file, int *fd, int *count)
 	struct stat		buf;
 	void			*ptr;
 
-	if (((*fd = open(file, O_RDONLY)) == -1)  ||
-			(fstat(*fd, &buf) == -1) ||
-			((ptr = mmap(0, buf.st_size, PROT_READ,
-						 MAP_PRIVATE, *fd, 0)) == MAP_FAILED))
+	if (stat(file, &buf) == -1)
+	{
+		ft_printf("%s: ", file);
+		perror("stat");
+		return (MAP_FAILED);
+	}
+	else if ((buf.st_mode & S_IFMT) != S_IFREG)
+		return (MAP_FAILED);
+	ft_printf("%s: ", strrchr(file, '/') + 1);
+	if ((*fd = open(file, O_RDONLY)) == -1)
 	{
 		perror("open");
-		*count -= 1;
+		return (MAP_FAILED);
 	}
+	else if ((ptr = mmap(0, buf.st_size, PROT_READ,
+			MAP_PRIVATE, *fd, 0)) == MAP_FAILED)
+	{
+		perror("mmap");
+		return (MAP_FAILED);
+	}
+	*count += 1;
 	return (ptr);
 }
 
@@ -95,8 +109,7 @@ void	macho_file_stat(char *file, t_hash_tbl *ht, int *count)
 	int		fd;
 	void	*ptr;
 
-	ft_printf("%s: ", file);
-	if (ptr != MAP_FAILED)
+	if ((ptr = map_file(file, &fd, count)) != MAP_FAILED)
 	{
 		magic = *(int*)ptr;
 		if (ht_isset(ht, &magic))
@@ -115,12 +128,23 @@ void	macho_dir_stat(char *dir, t_hash_tbl *ht, int *count)
 {
 	DIR				*dp;
 	struct dirent	*ep;
+	char			file[1024];
+	int				len;
 
 	dp = opendir (dir);
 	if (dp != NULL)
 	{
-		while ((ep = readdir (dp)) != NULL)
-			macho_file_stat(ep->d_name, ht, count);
+		file[0] = 0;
+		strcat(file, dir);
+		strcat(file, "/");
+		len = ft_strlen(file);
+		while ((ep = readdir(dp)) != NULL)
+		{
+			file[len] = 0;
+			strcat(file, ep->d_name);
+			if (ep->d_name[0] != '.')
+				macho_file_stat(file, ht, count);
+		}
 		closedir(dp);
 	}
 	else
