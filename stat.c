@@ -6,11 +6,11 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/07 15:17:27 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/11 20:14:54 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/13 17:34:06 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
@@ -18,9 +18,9 @@
 #include <sys/types.h>
 #include <string.h>
 
-#include "nm_otool.h"
 #include "hash_tables.h"
 #include "ft_printf.h"
+#include "macho.h"
 
 #define HT_GET_STR(ht, magic) ((t_val*)ht_get(ht, &magic))->str
 #define HT_GET_IND(ht, magic) ((t_val*)ht_get(ht, &magic))->i
@@ -47,7 +47,7 @@ static t_val magic_val[] = {{"MH_MAGIC", 0, 0},
 
 static int g_fd = 1;
 
-static const t_kv magic_kv[] = {{&magic_key[0], sizeof(unsigned int),
+static t_kv magic_kv[] = {{&magic_key[0], sizeof(unsigned int),
 										&magic_val[0], sizeof(magic_val[0])},
 								{&magic_key[1], sizeof(unsigned int),
 										&magic_val[1], sizeof(magic_val[1])},
@@ -82,43 +82,14 @@ void	print_stat(t_hash_tbl *ht, int i)
 
 void b(t_val *d) {ft_printf_fd(g_fd, "str: %s | index: %d", d->str, d->i);}
 
-void	*map_file(char *file, int *fd, int *count)
-{
-	struct stat		buf;
-	void			*ptr;
-
-	if (stat(file, &buf) == -1)
-	{
-		ft_printf_fd(g_fd, "%s: ", file);
-		perror("stat");
-		return (MAP_FAILED);
-	}
-	else if ((buf.st_mode & S_IFMT) != S_IFREG)
-		return (MAP_FAILED);
-	ft_printf_fd(g_fd, "%s: ", strrchr(file, '/') + 1);
-	if ((*fd = open(file, O_RDONLY)) == -1)
-	{
-		perror(file);
-		return (MAP_FAILED);
-	}
-	else if ((ptr = mmap(0, buf.st_size, PROT_READ,
-			MAP_PRIVATE, *fd, 0)) == MAP_FAILED)
-	{
-		perror("mmap");
-		return (MAP_FAILED);
-	}
-	*count += 1;
-	return (ptr);
-}
-
 void	macho_file_stat(char *file, t_hash_tbl *ht, int *count)
 {
 	unsigned int		magic;
-	int					fd;
 	void				*ptr;
 
-	if ((ptr = map_file(file, &fd, count)) != MAP_FAILED)
+	if ((ptr = map_file(file)))
 	{
+		*count += 1;
 		magic = *(unsigned int*)ptr;
 		if (ht_isset(ht, &magic))
 		{
@@ -128,8 +99,6 @@ void	macho_file_stat(char *file, t_hash_tbl *ht, int *count)
 		else
 			ft_printf_fd(g_fd, "not a mach-o file\n");
 	}
-	if (fd != -1)
-		close(fd);
 }
 
 void	macho_dir_stat(char *dir, t_hash_tbl *ht, int *count)
