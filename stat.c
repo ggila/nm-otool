@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/07 15:17:27 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/13 17:34:06 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/13 19:42:17 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "hash_tables.h"
 #include "ft_printf.h"
@@ -27,39 +28,27 @@
 #define HT_GET_STAT(ht, magic) ((t_val*)ht_get(ht, &magic))->stat
 #define HT_INC_STAT(ht, magic) (*(int*)(&(((t_val*)ht_get(ht, &magic))->stat))) += 1
 
-typedef struct	s_val
+typedef struct	s_magic_val
 {
 	char	*str;
 	int		i;
 	int		stat;
-}				t_val;
+}				t_magic_val;
 
-static unsigned int magic_key[] = {0xfeedface, 0xcefaedfe,
-									0xfeedfacf, 0xcffaedfe,
-									0xcafebabe, 0xbebafeca};
+typedef struct	s_magic
+{
+	uint32_t	magic;
+	t_magic_val	val;
+}				t_magic;
 
-static t_val magic_val[] = {{"MH_MAGIC", 0, 0},
-							{"MH_CIGAM", 1, 0},
-							{"MH_MAGIC_64", 2, 0},
-							{"MH_CIGAM_64", 3, 0},
-							{"FAT_MAGIC", 4, 0},
-							{"FAT_CIGAM", 5, 0}};
+static t_magic magic_data[] = {{0xfeedface, {"MH_MAGIC", 0, 0}},
+								{0xcefaedfe, {"MH_CIGAM", 1, 0}},
+								{0xfeedfacf, {"MH_MAGIC_64", 2, 0}},
+								{0xcffaedfe, {"MH_CIGAM_64", 3, 0}},
+								{0xcafebabe, {"FAT_MAGIC", 4, 0}},
+								{0xbebafeca, {"FAT_CIGAM", 5, 0}}};
 
 static int g_fd = 1;
-
-static t_kv magic_kv[] = {{&magic_key[0], sizeof(unsigned int),
-										&magic_val[0], sizeof(magic_val[0])},
-								{&magic_key[1], sizeof(unsigned int),
-										&magic_val[1], sizeof(magic_val[1])},
-								{&magic_key[2], sizeof(unsigned int),
-										&magic_val[2], sizeof(magic_val[2])},
-								{&magic_key[3], sizeof(unsigned int),
-										&magic_val[3], sizeof(magic_val[3])},
-								{&magic_key[4], sizeof(unsigned int),
-										&magic_val[4], sizeof(magic_val[4])},
-								{&magic_key[5], sizeof(unsigned int),
-										&magic_val[5], sizeof(magic_val[5])},
-								KV_NULL};
 
 void	print_stat(t_hash_tbl *ht, int i)
 {
@@ -144,6 +133,17 @@ int		check_opt(int ac, char **av)
 	return (0);
 }
 
+void	ht_fill(t_hash_tbl *const ht, t_magic const data[], int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		ht->nodes[i].key = ;
+	}
+}
+
 int		main(int ac, char **av)
 {
 	void			*ptr;
@@ -152,7 +152,7 @@ int		main(int ac, char **av)
 	int				count;
 
 	ht_init(&ht, 9, &int_cmp, &int_hash);
-	ht_fill(&ht, magic_kv);
+	my_fill(&ht, magic_data, 6);
 	i = check_opt(ac, av);
 	count = 0;
 	if (ac == i + 1)

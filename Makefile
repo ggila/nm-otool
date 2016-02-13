@@ -6,7 +6,7 @@
 #    By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/10/08 19:45:49 by ggilaber          #+#    #+#              #
-#    Updated: 2016/02/13 17:34:40 by ggilaber         ###   ########.fr        #
+#    Updated: 2016/02/13 18:24:31 by ggilaber         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,10 @@ LIB_DIR = $(addsuffix /, $(addprefix lib/, $(LIB)))
 LIB_INC = $(addprefix -I./, $(LIB_DIR))
 LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 
+all: stat
+
 stat: $(LIB_A) $(MACHO_LIB)
+	@echo
 	$(CC) $(FLAGS) -o $@ $(LIB_INC) $(MACHO_INC) $(LIB_A) $(MACHO_LIB) stat.c
 
 $(LIB_A):
@@ -46,11 +49,16 @@ $(MACHO_LIB):
 	@echo "\nbuild macho.a"
 	@make -C $(dir $@)
 
-clean:
-	@echo ''
+#clean:
+#	@echo
 
 fclean: clean
-	rm -rf $(LIB_A)
-	rm -rf stat
+	@echo fclean
+	@rm -rf $(LIB_A)
+	@rm -rf $(MACHO_LIB)
+	@rm -rf stat
 
-re: fclean_lib fclean all
+re: fclean blankline all blankline stat
+
+blankline:
+	@echo
