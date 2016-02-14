@@ -140,7 +140,11 @@ void	ht_fill(t_hash_tbl *const ht, t_magic const data[], int size)
 	i = 0;
 	while (i < size)
 	{
-		ht->nodes[i].key = ;
+		ht->nodes[i].key = (void*)&data[i];
+		ht->nodes[i].key_size = size;
+		ht->nodes[i].value = (void*)&data[i].val;
+		ht->nodes[i].value_size = sizeof(data[i].val);
+		i++;
 	}
 }
 
