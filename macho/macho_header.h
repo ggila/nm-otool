@@ -28,6 +28,7 @@ typedef const uint32_t	t_magic_key;
 typedef struct			s_magic_val
 {
 	const char	*const str;
+	const char	*const architecture;
 	const int	i;
 }						t_magic_val;
 
@@ -45,11 +46,11 @@ typedef struct			s_magic_data
 
 # define DATA_MAGIC_SIZE 6
 
-static t_magic_data		g_magic[] = {{0xfeedface, {"MH_MAGIC", 0}},
-									{0xcefaedfe, {"MH_CIGAM", 1}},
-									{0xfeedfacf, {"MH_MAGIC_64", 2}},
-									{0xcffaedfe, {"MH_CIGAM_64", 3}},
-									{0xcafebabe, {"FAT_MAGIC", 4}},
-									{0xbebafeca, {"FAT_CIGAM", 5}}};
+static t_magic_data		g_magic[] = {{0xfeedface, {"MH_MAGIC", "32-bit"}},
+									{0xcefaedfe, {"MH_CIGAM", "32-bit"}},
+									{0xfeedfacf, {"MH_MAGIC_64", "64-bit"}},
+									{0xcffaedfe, {"MH_CIGAM_64", "64-bit"}},
+									{0xcafebabe, {"FAT_MAGIC", "fat"}},
+									{0xbebafeca, {"FAT_CIGAM", "fat"}}};
 
 #endif
