@@ -1,4 +1,5 @@
 .*.sw[op]
+cscope.out
 a.out
 *.a
 .DS_Store
