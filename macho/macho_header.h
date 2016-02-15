@@ -13,44 +13,5 @@
 #ifndef MACHO_HEADER_H
 # define MACHO_HEADER_H
 
-//# include <ft_printf.h>
-# include <stdint.h>
-
-# ifndef OK
-#  define OK 0
-# endif
-# ifndef KO
-#  define KO 1
-# endif
-
-typedef const uint32_t	t_magic_key;
-
-typedef struct			s_magic_val
-{
-	const char	*const str;
-	const char	*const architecture;
-	const int	i;
-}						t_magic_val;
-
-typedef struct			s_magic_node
-{
-	t_magic_key	*magic;
-	t_magic_val	*val;
-}						t_magic_node;
-
-typedef struct			s_magic_data
-{
-	t_magic_key		key;
-	t_magic_val		val;
-}						t_magic_data;
-
-# define DATA_MAGIC_SIZE 6
-
-static t_magic_data		g_magic[] = {{0xfeedface, {"MH_MAGIC", "32-bit"}},
-									{0xcefaedfe, {"MH_CIGAM", "32-bit"}},
-									{0xfeedfacf, {"MH_MAGIC_64", "64-bit"}},
-									{0xcffaedfe, {"MH_CIGAM_64", "64-bit"}},
-									{0xcafebabe, {"FAT_MAGIC", "fat"}},
-									{0xbebafeca, {"FAT_CIGAM", "fat"}}};
 
 #endif
