@@ -31,11 +31,11 @@ typedef struct			s_magic_val
 	const int	i;
 }						t_magic_val;
 
-typedef struct			s_magic
+typedef struct			s_magic_node
 {
 	t_magic_key	*magic;
 	t_magic_val	*val;
-}						t_magic;
+}						t_magic_node;
 
 typedef struct			s_magic_data
 {
@@ -43,7 +43,7 @@ typedef struct			s_magic_data
 	t_magic_val		val;
 }						t_magic_data;
 
-# define DATA_SIZE
+# define DATA_MAGIC_SIZE 6
 
 static t_magic_data		g_magic[] = {{0xfeedface, {"MH_MAGIC", 0}},
 									{0xcefaedfe, {"MH_CIGAM", 1}},
