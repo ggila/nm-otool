@@ -1,8 +1,9 @@
-#include "ofile.h"
+//#include "ofile.h"
+#include <mach-o/loader.h>
+#include <stdio.h>
 
 int main(void)
 {
-	struct ofile test;
-
+	printf("%lu\n", sizeof(char));
 	return (0);
 }
