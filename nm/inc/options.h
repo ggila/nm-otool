@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 21:50:28 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 19:47:15 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/21 20:46:22 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ typedef struct		s_opt
 {
 	char	c_opt;
 	char	*str_opt;
-	int		bit;
 	char	*comment;
 }					t_opt;
 
@@ -56,29 +55,47 @@ typedef struct		s_opt
 #define HELP_OPT_MAJA "pathname or library name of an object on each line"
 #define HELP_OPT_MAJP "portable output format"
 
-static const t_opt	g_opt[] = {{'a', "all", 0, HELP_OPT_A},
-							{'g', "global", 1, HELP_OPT_G},
-							{'n', "numsort", 2, HELP_OPT_N},
-							{'o', "name", 3, HELP_OPT_O},
-							{'p', "nosort", 4, HELP_OPT_P},
-							{'r', "reverse", 5, HELP_OPT_R},
-							{'u', "undef", 6, HELP_OPT_U},
-							{'m', "symbformat", 7, HELP_OPT_M},
-							{'x', "hex", 8, HELP_OPT_X},
-							{'j', "nameonly", 9, HELP_OPT_J},
-							{'s', "section", 10, HELP_OPT_S},
-							{'l', "sectionstart", 11, HELP_OPT_L},
-							{'f', "dylib", 12, HELP_OPT_F},
-							{'v', "valdiff", 13, HELP_OPT_V},
-							{'b', "stabsfor", 14, HELP_OPT_B},
-							{'i', "inc", 15, HELP_OPT_I},
-							{'A', "pathname", 16, HELP_OPT_MAJA},
-							{'P', "portable", 17, HELP_OPT_MAJP},
-							{'h', "help", 18, "display this help"},
-							{0, NULL, -1, NULL}};
+static const t_opt	g_opt[] = {{'a', "all", HELP_OPT_A},
+							{'g', "global", HELP_OPT_G},
+							{'n', "numsort", HELP_OPT_N},
+							{'o', "name", HELP_OPT_O},
+							{'p', "nosort", HELP_OPT_P},
+							{'r', "reverse", HELP_OPT_R},
+							{'u', "undef", HELP_OPT_U},
+							{'m', "symbformat", HELP_OPT_M},
+							{'x', "hex", HELP_OPT_X},
+							{'j', "nameonly", HELP_OPT_J},
+							{'s', "section", HELP_OPT_S},
+							{'l', "sectionstart", HELP_OPT_L},
+							{'f', "dylib", HELP_OPT_F},
+							{'v', "valdiff", HELP_OPT_V},
+							{'b', "stabsfor", HELP_OPT_B},
+							{'i', "inc", HELP_OPT_I},
+							{'A', "pathname", HELP_OPT_MAJA},
+							{'P', "portable", HELP_OPT_MAJP},
+							{'h', "help", "display this help"},
+							{0, NULL, NULL}};
 
 # define MASK 0x1
-# define MASK_HELP MASK<<0
+# define MASK_A MASK<<0
+# define MASK_G MASK<<1
+# define MASK_N MASK<<2
+# define MASK_O MASK<<3
+# define MASK_P MASK<<4
+# define MASK_R MASK<<5
+# define MASK_U MASK<<6
+# define MASK_M MASK<<7
+# define MASK_X MASK<<9
+# define MASK_J MASK<<10
+# define MASK_S MASK<<11
+# define MASK_L MASK<<12
+# define MASK_F MASK<<13
+# define MASK_V MASK<<14
+# define MASK_B MASK<<15
+# define MASK_I MASK<<16
+# define MASK_AA MASK<<17
+# define MASK_PP MASK<<18
+# define MASK_H MASK<<19
 
 /*
 ** check options return the number of char* of av read as options or -1

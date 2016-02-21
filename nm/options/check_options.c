@@ -6,13 +6,9 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 21:40:57 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 19:48:12 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/21 20:30:09 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/*
-** doc in options.h
-*/
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -23,27 +19,29 @@
 #include "nm.h"
 #include "options.h"
 
-static char	check_char_opt(const char *arg, t_nm_opt *opt)
+static char	check_char_opt(const char *prog, const char *arg, t_nm_opt *opt)
 {
 	int i;
 	int j;
 
 	i = 0;
-	j = 0;
 	while (arg[i])
 	{
-		while (!IS_OPT_NULL(i) && (g_opt[j].c_opt != arg[i]))
+		j = 0;
+		while (!IS_OPT_NULL(j) && (g_opt[j].c_opt != arg[i]))
 			j++;
-		if (g_opt[j].c_opt)
-			opt->flag &= MASK << g_opt[j].bit;
-		else
+		if (IS_OPT_NULL(j))
+		{
+			ft_printf("%s: illegal option: %c\n\n", prog, arg[i]);
 			return (KO);
+		}
+		opt->flag &= MASK << j;
 		i++;
 	}
 	return (OK);
 }
 
-static char	check_str_opt(const char *arg, t_nm_opt *opt)
+static char	check_str_opt(const char *prog, const char *arg, t_nm_opt *opt)
 {
 	int	i;
 
@@ -51,10 +49,12 @@ static char	check_str_opt(const char *arg, t_nm_opt *opt)
 	while (!IS_OPT_NULL(i) && g_opt[i].str_opt &&
 			ft_strcmp(g_opt[i].str_opt, arg))
 		i++;
-	if (g_opt[i].str_opt)
-		opt->flag &= MASK << g_opt[i].bit;
-	else
+	if (IS_OPT_NULL(i))
+	{
+		ft_printf("%s: illegal option: %s\n\n", prog, arg);
 		return (KO);
+	}
+	opt->flag &= MASK << i;
 	return (OK);
 }
 
@@ -76,10 +76,9 @@ int			check_opt(int ac, char **av, t_nm_opt *opt)
 			return (i + 1);
 		if (is_option(av[i]) == KO)
 			break ;
-		if ((av[i][1] == '-' ? check_str_opt(av[i] + 2, opt) :
-								check_char_opt(av[i] + 1, opt)) == KO)
+		if ((av[i][1] == '-' ? check_str_opt(av[0], av[i] + 2, opt) :
+								check_char_opt(av[0], av[i] + 1, opt)) == KO)
 		{
-			ft_printf("%s: illegal option: %s\n\n", av[0], av[i]);
 			usage(av[0]);
 			return (KO);
 		}
