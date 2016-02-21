@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 11:33:46 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 18:26:29 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/21 19:49:00 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,15 @@ static int	get_opt_len(int len[])
 		len[i] = 0;
 		if (g_opt[i].c_opt)
 		{
-			len[i] += 1;
+			len[i] += 2;
 			if (g_opt[i].str_opt)
 				len[i] += 2;
 		}
 		if (g_opt[i].str_opt)
-			len[i] += ft_strlen(g_opt[i].str_opt);
+			len[i] += 2 + ft_strlen(g_opt[i].str_opt);
 		if (len[i] > max)
 			max = len[i];
+		i++;
 	}
 	return max;
 }
@@ -50,7 +51,6 @@ static void	print_opt(int len[], int max)
 
 	i = 0;
 	ft_printf("\n");
-	i = 0;
 	while (!IS_OPT_NULL(i))
 	{
 		o = g_opt[i];
@@ -63,7 +63,8 @@ static void	print_opt(int len[], int max)
 		if (o.str_opt)
 			ft_printf("--%s", o.str_opt);
 		ft_printf("%s     %s\n",
-				WHITE_SPACE + LEN_WS + max - len[i], o.comment);
+				WHITE_SPACE + LEN_WS -  (max - len[i]), o.comment);
+		i++;
 	}
 }
 

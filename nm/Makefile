@@ -30,7 +30,8 @@ LIB_DIR = $(addsuffix /, $(addprefix ../lib/, $(LIB)))
 LIB_INC = $(addprefix -I./, $(LIB_DIR))
 LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 
-SRC = options/usage.c\
+SRC = main.c\
+	  options/usage.c\
 	  options/check_options.c
 
 OBJ_DIR = obj

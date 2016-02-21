@@ -1,4 +1,4 @@
-obj
+obj/
 .nfs*
 .*.sw[op]
 cscope.out

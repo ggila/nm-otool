@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 21:50:28 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 18:42:29 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/21 19:47:15 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,13 @@ static const t_opt	g_opt[] = {{'a', "all", 0, HELP_OPT_A},
 							{'x', "hex", 8, HELP_OPT_X},
 							{'j', "nameonly", 9, HELP_OPT_J},
 							{'s', "section", 10, HELP_OPT_S},
-							{'l', NULL, 11, HELP_OPT_L},
-							{'f', NULL, 12, HELP_OPT_F},
-							{'v', NULL, 13, HELP_OPT_V},
-							{'b', NULL, 14, HELP_OPT_B},
-							{'i', NULL, 15, HELP_OPT_I},
-							{'A', NULL, 16, HELP_OPT_MAJA},
-							{'P', NULL, 17, HELP_OPT_MAJP},
+							{'l', "sectionstart", 11, HELP_OPT_L},
+							{'f', "dylib", 12, HELP_OPT_F},
+							{'v', "valdiff", 13, HELP_OPT_V},
+							{'b', "stabsfor", 14, HELP_OPT_B},
+							{'i', "inc", 15, HELP_OPT_I},
+							{'A', "pathname", 16, HELP_OPT_MAJA},
+							{'P', "portable", 17, HELP_OPT_MAJP},
 							{'h', "help", 18, "display this help"},
 							{0, NULL, -1, NULL}};
 
@@ -85,7 +85,7 @@ static const t_opt	g_opt[] = {{'a', "all", 0, HELP_OPT_A},
 ** if it fails
 */
 
-int					check_opt(int ac, const char **av, t_nm_flag *flag);
+int					check_opt(int ac, char **av, t_nm_opt *opt);
 void				usage(const char *prog_name);
 void				print_help(const char *prog_name);
 
