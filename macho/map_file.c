@@ -6,11 +6,10 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/13 16:13:09 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/13 18:30:48 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/21 16:00:34 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "macho.h"
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -31,7 +30,7 @@ static char	get_stat(char *file, struct stat *buf)
 	return (OK);
 }
 
-void	*map_file(char *file)
+void		*map_file(char *file)
 {
 	struct stat		buf;
 	int				fd;

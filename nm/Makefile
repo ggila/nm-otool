@@ -15,50 +15,50 @@
 #    $* -> nom fichier sans suffixe
 ###
 
-.PHONY : clean fclean re all nm otool lipo
+NAME = nm
 
 CC = gcc
 FLAGS = -Wall -Werror -Wextra
 
-MACHO_LIB = macho/macho.a
-MACHO_INC = -I./macho/
+INC = -I../lib/ft_printf/\
+	-I../lib/libft/\
+	-I./inc
 
 LIB = libft\
-	hash_tables\
-	ft_printf
-LIB_DIR = $(addsuffix /, $(addprefix lib/, $(LIB)))
+	  ft_printf
+LIB_DIR = $(addsuffix /, $(addprefix ../lib/, $(LIB)))
 LIB_INC = $(addprefix -I./, $(LIB_DIR))
 LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 
-all: nm
+SRC = options/usage.c\
+	  options/check_options.c
 
-nm:
-	@make -C $@
-	@mv nm/nm .
+OBJ_DIR = obj
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
-stat: $(LIB_A) $(MACHO_LIB)
-	@echo
-	$(CC) $(FLAGS) -o $@ $(LIB_INC) $(MACHO_INC) $(LIB_A) $(MACHO_LIB) stat.c
+all: $(NAME)
+
+$(NAME): $(LIB_A) $(OBJ)
+	$(CC) $(FLAGS) -o $@ $(LIB_A) $(OBJ)
 
 $(LIB_A):
 	@echo 'build $(notdir $@)'
 	@make -C $(dir $@)
 	@make clean -C $(dir $@)
 
-$(MACHO_LIB):
-	@echo "\nbuild macho.a"
-	@make -C $(dir $@)
+obj/%.o: | $(OBJ_DIR)
+	$(CC) $(FLAGS) $(INC) -c $*.c -o $@
 
-#clean:
-#	@echo
+#(OBJ_DIR)/%.o : %.c $(INC) | $(OBJ_DIR)
+#	$(CC) $(FLAGS) $(INC) -c $< -o $@
 
-fclean: clean
-	@echo fclean
-	@rm -rf $(LIB_A)
-	@rm -rf $(MACHO_LIB)
-	@rm -rf stat
+$(OBJ_DIR):
+	mkdir -p obj obj/options
 
-re: fclean blankline all blankline stat
+clean :
+	rm -rf $(OBJ_DIR)
 
-blankline:
-	@echo
+fclean : clean
+	rm -rf $(NAME)
+
+re : fclean all
