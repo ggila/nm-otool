@@ -20,9 +20,10 @@ NAME = nm
 CC = gcc
 FLAGS = -Wall -Werror -Wextra
 
-INC = -I../lib/ft_printf/\
-	-I../lib/libft/\
-	-I./inc
+INC = ../lib/ft_printf/ft_printf.h\
+	../lib/libft/libft.h\
+	../inc/nm.h\
+	../inc/options.h
 
 LIB = libft\
 	  ft_printf
@@ -47,14 +48,11 @@ $(LIB_A):
 	@make -C $(dir $@)
 	@make clean -C $(dir $@)
 
-obj/%.o: | $(OBJ_DIR)
-	$(CC) $(FLAGS) $(INC) -c $*.c -o $@
-
-#(OBJ_DIR)/%.o : %.c $(INC) | $(OBJ_DIR)
-#	$(CC) $(FLAGS) $(INC) -c $< -o $@
+$(OBJ_DIR)/%.o: %.c $(INC)| $(OBJ_DIR)
+	@$(CC) $(FLAGS) $(addprefix -I, $(dir $(INC))) -c $< -o $@
 
 $(OBJ_DIR):
-	mkdir -p obj obj/options
+	@mkdir -p obj obj/options
 
 clean :
 	rm -rf $(OBJ_DIR)

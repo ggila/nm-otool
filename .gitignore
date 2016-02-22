@@ -4,4 +4,4 @@ obj/
 cscope.out
 a.out
 *.a
-.DS_Store
+.*DS_Store

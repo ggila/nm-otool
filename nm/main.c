@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 18:43:19 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 13:02:11 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 15:43:41 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@
 #include "options.h"
 #include "ft_printf.h"
 
-static void	add_ofile(char *file, t_env env)
+static int	add_ofile(char *file, t_env *env)
 {
-	static t_olist	**list = &(env->ofile);
 	t_olist			*new;
 
 	if (!(new = malloc(sizeof(t_olist))))
@@ -31,8 +30,9 @@ static void	add_ofile(char *file, t_env env)
 		write(1, "ft_strdup() failed\n", 19);
 		return (KO);
 	}
-	new->next = NULL;
-	list = &(new->next);
+	new->next = env->ofile;
+	env->ofile = new;
+	return(OK);
 }
 
 static int	read_arg(int ac, char **av, t_env *env)
@@ -41,24 +41,28 @@ static int	read_arg(int ac, char **av, t_env *env)
 
 	if ((i = get_opt(ac, av, &(env->opt))) == KO)
 		return (KO);
-	if (i == ac && add_ofile("a.out") == KO)
+	if (i == ac && add_ofile("a.out", env) == KO)
 		return (KO);
 	while (i < ac)
-		if (add_ofile())
+		if (add_ofile(av[ac-- - 1], env) == KO)
+			return (KO);
 	return (OK);
 }
 
 int	main(int ac, char **av)
 {
 	t_env	env;
+	t_olist	*lst;
 
-	ft_bzero(env, sizeof(t_env));
+	ft_bzero(&env, sizeof(t_env));
 	if (read_arg(ac, av, &env) == KO)
 		return (EXIT_FAILURE);
-	while (i < ac)
+	lst = env.ofile;
+	while (lst)
 	{
-		ft_printf("%s\n", av[i]);
-		i++;
+		ft_printf("%s\n", lst->file);
+//		ofile_process(lst->file);
+		lst = lst->next;
 	}
 	return (EXIT_SUCCESS);
 }

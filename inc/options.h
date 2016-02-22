@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 21:50:28 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 20:46:22 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 15:39:11 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static const t_opt	g_opt[] = {{'a', "all", HELP_OPT_A},
 ** if it fails
 */
 
-int					check_opt(int ac, char **av, t_nm_opt *opt);
+int					get_opt(int ac, char **av, t_nm_opt *opt);
 void				usage(const char *prog_name);
 void				print_help(const char *prog_name);
 

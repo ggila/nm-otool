@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 12:57:44 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 12:46:58 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 15:38:28 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define NM_H
 
 # include <stdint.h>
+
+# include "ofile.h"
 
 # ifndef OK
 #  define OK 0
@@ -31,9 +33,14 @@ typedef struct	s_nm_opt
 
 typedef struct	s_olist
 {
-	t_ofile			file;
-	strcut s_olist	*next;
+	char			*file;
+	struct s_olist	*next;
 }				t_olist;
+
+typedef struct s_nm_flag
+{
+	int	n;
+}				t_nm_flag;
 
 typedef struct	s_env
 {

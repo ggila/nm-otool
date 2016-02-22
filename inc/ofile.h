@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:24:55 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/20 18:29:51 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 14:30:07 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ typedef int			t_integer;
 ** define in /usr/include/mach/machine.h
 */
 
-typedef integer_t	t_cpu_type;
-typedef integer_t	t_cpu_subtype;
-typedef integer_t	t_cpu_threadtype;
+typedef t_integer	t_cpu_type;
+typedef t_integer	t_cpu_subtype;
+typedef t_integer	t_cpu_threadtype;
 
 /*
 ** define in /usr/include/mach-o/loader.h

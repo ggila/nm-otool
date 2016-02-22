@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 21:40:57 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 20:30:09 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 15:42:30 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static char	is_option(const char *arg)
 	return (OK);
 }
 
-int			check_opt(int ac, char **av, t_nm_opt *opt)
+int			get_opt(int ac, char **av, t_nm_opt *opt)
 {
 	int	i;
 
