@@ -32,6 +32,8 @@ LIB_INC = $(addprefix -I./, $(LIB_DIR))
 LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 
 SRC = main.c\
+	  process_flag.c\
+	  ofile_process.c\
 	  options/usage.c\
 	  options/get_options.c
 

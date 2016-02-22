@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 12:57:44 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 15:38:28 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 16:39:18 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,8 @@ typedef struct	s_env
 	t_nm_flag	flag;
 	t_olist		*ofile;
 }				t_env;
+
+t_nm_flag		process_flag(t_nm_opt *opt);
+void			ofile_process(char *file, t_nm_flag *flag);
 
 #endif

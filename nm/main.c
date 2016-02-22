@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 18:43:19 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 15:43:41 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 16:28:13 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ int	main(int ac, char **av)
 	ft_bzero(&env, sizeof(t_env));
 	if (read_arg(ac, av, &env) == KO)
 		return (EXIT_FAILURE);
+	env.flag = process_flag(&(env.opt));
 	lst = env.ofile;
 	while (lst)
 	{
-		ft_printf("%s\n", lst->file);
-//		ofile_process(lst->file);
+		ofile_process(lst->file, &(env.flag));
 		lst = lst->next;
 	}
 	return (EXIT_SUCCESS);
