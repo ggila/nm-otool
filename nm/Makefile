@@ -32,7 +32,7 @@ LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 
 SRC = main.c\
 	  options/usage.c\
-	  options/check_options.c
+	  options/get_options.c
 
 OBJ_DIR = obj
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
