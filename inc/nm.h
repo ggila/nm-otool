@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 12:57:44 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 16:39:18 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 19:05:09 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,24 @@ typedef struct	s_nm_opt
 
 typedef struct	s_olist
 {
-	char			*file;
+	t_ofile			ofile;
 	struct s_olist	*next;
 }				t_olist;
 
-typedef struct s_nm_flag
+typedef struct	s_nm_flag
 {
-	int	n;
+	char	*arch;
 }				t_nm_flag;
 
 typedef struct	s_env
 {
 	t_nm_opt	opt;
 	t_nm_flag	flag;
-	t_olist		*ofile;
+	t_olist		*olst;
 }				t_env;
 
 t_nm_flag		process_flag(t_nm_opt *opt);
-void			ofile_process(char *file, t_nm_flag *flag);
+void			ofile_process(t_ofile *ofile, t_nm_flag *flag);
+void			*map_file(char *file);
 
 #endif

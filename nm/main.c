@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/21 18:43:19 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 16:28:13 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 17:34:16 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ static int	add_ofile(char *file, t_env *env)
 		write(1, "malloc() failed\n", 16);
 		return (KO);
 	}
-	if (!(new->file = ft_strdup(file)))
+	ft_bzero(&(new->ofile), sizeof(t_ofile));
+	if (!(new->ofile.file_name = ft_strdup(file)))
 	{
 		write(1, "ft_strdup() failed\n", 19);
 		return (KO);
 	}
-	new->next = env->ofile;
-	env->ofile = new;
+	new->next = env->olst;
+	env->olst = new;
 	return(OK);
 }
 
@@ -58,10 +59,10 @@ int	main(int ac, char **av)
 	if (read_arg(ac, av, &env) == KO)
 		return (EXIT_FAILURE);
 	env.flag = process_flag(&(env.opt));
-	lst = env.ofile;
+	lst = env.olst;
 	while (lst)
 	{
-		ofile_process(lst->file, &(env.flag));
+		ofile_process(&(lst->ofile), &(env.flag));
 		lst = lst->next;
 	}
 	return (EXIT_SUCCESS);

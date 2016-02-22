@@ -34,6 +34,7 @@ LIB_A = $(join $(LIB_DIR), $(addsuffix .a, $(LIB)))
 SRC = main.c\
 	  process_flag.c\
 	  ofile_process.c\
+	  map_file.c\
 	  options/usage.c\
 	  options/get_options.c
 
@@ -42,7 +43,7 @@ OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 all: $(NAME)
 
-$(NAME): $(LIB_A) $(OBJ)
+$(NAME): $(LIB_A) blankline $(OBJ) blankline
 	$(CC) $(FLAGS) -o $@ $(LIB_A) $(OBJ)
 
 $(LIB_A):
@@ -51,6 +52,7 @@ $(LIB_A):
 	@make clean -C $(dir $@)
 
 $(OBJ_DIR)/%.o: %.c $(INC)| $(OBJ_DIR)
+	@echo $<
 	@$(CC) $(FLAGS) $(addprefix -I, $(dir $(INC))) -c $< -o $@
 
 $(OBJ_DIR):
@@ -61,5 +63,10 @@ clean :
 
 fclean : clean
 	rm -rf $(NAME)
+	rm -rf $(LIB_A)
+	@echo
+
+blankline:
+	@echo
 
 re : fclean all

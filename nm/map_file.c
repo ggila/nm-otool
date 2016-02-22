@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/13 16:13:09 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/21 16:00:34 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/22 18:15:28 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,18 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static char	get_stat(char *file, struct stat *buf)
+#include "ft_printf.h"
+
+static char	get_stat(char *file, int fd, struct stat *buf)
 {
-	if (stat(file, buf) == -1)
+	if (fstat(fd, buf) == -1)
 	{
 		ft_printf("%s, stat() failed\n", file);
 		return (KO);
 	}
 	if ((buf->st_mode & S_IFMT) != S_IFREG)
 	{
-		ft_printf("%s: not a regular file\n");
+		ft_printf("%s: not a regular file\n", file);
 		return (KO);
 	}
 	return (OK);
@@ -43,7 +45,7 @@ void		*map_file(char *file)
 		ft_printf("%s: open() failed\n", file);
 		return (NULL);
 	}
-	get_stat(file, &buf);
+	get_stat(file, fd, &buf);
 	if ((ptr = mmap(0, buf.st_size, PROT_READ,
 				MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 	{
