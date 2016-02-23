@@ -6,7 +6,7 @@
 /*   By: ggilaber <ggilaber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/22 16:39:35 by ggilaber          #+#    #+#             */
-/*   Updated: 2016/02/22 19:05:29 by ggilaber         ###   ########.fr       */
+/*   Updated: 2016/02/23 08:16:29 by ggilaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void			ofile_process(t_ofile *ofile, t_nm_flag *flag)
 
 	ft_printf("%s\n", ofile->file_name);
 	check_member(ofile->file_name, ofile);
-	ptr = map_file(ofile->file_name);
+	if ((ptr = map_file(ofile->file_name)) == NULL)
+		return;
+	ofile_fill(ofile, ptr, flag);
 	(void)flag;
 }
