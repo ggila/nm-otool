@@ -20,8 +20,8 @@ NAME = nm
 CC = gcc
 FLAGS = -Wall -Werror -Wextra
 
-INC = ../lib/ft_printf/ft_printf.h\
-	../lib/libft/libft.h\
+INC = ../lib/inc/ft_printf.h\
+	../lib/inc/libft.h\
 	../inc/nm.h\
 	../inc/options.h
 
